@@ -1,0 +1,4 @@
+theme: jekyll-theme-primer
+title: Clypify
+description: Documentation for the Clypify project
+baseurl: "/clypify"

@@ -1,0 +1,22 @@
+# Security
+android/key.properties
+*.jks
+*.keystore
+
+# FVM Version Cache
+.fvm/
+.flutter-plugins-dependencies
+
+.flutter-plugins
+.fvmrc
+.metadata
+.dart_tool/
+.vscode/
+.idea/
+build/
+docs/_site/
+# Leftover assets from previous project
+assets/clypify/
+
+# Generated files
+# Flutter/Dart/Pub related

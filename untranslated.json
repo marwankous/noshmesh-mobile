@@ -1,0 +1,13 @@
+{
+  "ar": [
+    "send_reset_link",
+    "reset_password_instruction",
+    "reset_your_password"
+  ],
+
+  "fr": [
+    "send_reset_link",
+    "reset_password_instruction",
+    "reset_your_password"
+  ]
+}

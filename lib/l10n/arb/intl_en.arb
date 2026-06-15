@@ -1,0 +1,442 @@
+{
+  "@@locale": "en",
+  "appTitle": "NoshMesh",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcomeMessage": "Welcome to NoshMesh",
+  "@welcomeMessage": {
+    "description": "The welcome message displayed on the home screen"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Label for the home tab or button"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Label for the settings tab or button"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Label for the profile tab or button"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Label for the dark mode option"
+  },
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "Label for the light mode option"
+  },
+  "systemMode": "System Mode",
+  "@systemMode": {
+    "description": "Label for the system mode option"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Label for language selection"
+  },
+  "change_language": "Change application language",
+  "@change_language": {
+    "description": "Label for changing the application language"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Label for theme selection"
+  },
+  "change_theme": "Change application theme",
+  "@change_theme": {
+    "description": "Label for changing the application theme"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Label for notifications settings"
+  },
+  "notification_settings": "Configure notification preferences",
+  "@notification_settings": {
+    "description": "Label for notification settings description"
+  },
+  "localization_demo": "Localization Demo",
+  "@localization_demo": {
+    "description": "Label for the localization demo option"
+  },
+  "localization_demo_description": "View localization features in action",
+  "@localization_demo_description": {
+    "description": "Description for the localization demo option"
+  },
+  "language_settings": "Language Settings",
+  "@language_settings": {
+    "description": "Title for the language settings screen"
+  },
+  "select_your_language": "Select your preferred language",
+  "@select_your_language": {
+    "description": "Instruction to select a language"
+  },
+  "language_explanation": "The selected language will be applied across the entire application",
+  "@language_explanation": {
+    "description": "Explanation of the language selection effects"
+  },
+  "localization_assets_demo": "Localization & Assets Demo",
+  "@localization_assets_demo": {
+    "description": "Title for the localization assets demo screen"
+  },
+  "current_language": "Current Language",
+  "@current_language": {
+    "description": "Label for displaying current language info"
+  },
+  "language_code": "Language code",
+  "@language_code": {
+    "description": "Label for language code"
+  },
+  "language_name": "Language name",
+  "@language_name": {
+    "description": "Label for language name"
+  },
+  "formatting_examples": "Formatting Examples",
+  "@formatting_examples": {
+    "description": "Title for formatting examples section"
+  },
+  "date_full": "Date (full)",
+  "@date_full": {
+    "description": "Label for full date format example"
+  },
+  "date_short": "Date (short)",
+  "@date_short": {
+    "description": "Label for short date format example"
+  },
+  "time": "Time",
+  "@time": {
+    "description": "Label for time format example"
+  },
+  "currency": "Currency",
+  "@currency": {
+    "description": "Label for currency format example"
+  },
+  "percent": "Percent",
+  "@percent": {
+    "description": "Label for percent format example"
+  },
+  "localized_assets": "Localized Assets",
+  "@localized_assets": {
+    "description": "Title for localized assets section"
+  },
+  "localized_assets_explanation": "This section demonstrates how to load different assets based on the selected language. Images, audio, and other resources can be language-specific.",
+  "@localized_assets_explanation": {
+    "description": "Explanation of localized assets feature"
+  },
+  "image_example": "Localized Image Example",
+  "@image_example": {
+    "description": "Title for localized image example"
+  },
+  "welcome_image_caption": "This image is loaded based on your selected language",
+  "@welcome_image_caption": {
+    "description": "Caption for the welcome image example"
+  },
+  "common_image_example": "Common Image Example",
+  "@common_image_example": {
+    "description": "Title for common image example"
+  },
+  "common_image_caption": "This image is the same across all languages",
+  "@common_image_caption": {
+    "description": "Caption for the common image example"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Label for the logout button"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Label for the login button"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for the email field"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Label for the password field"
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Label for the sign in button"
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Label for the register button"
+  },
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Label for the forgot password button"
+  },
+  "errorOccurred": "An error occurred",
+  "@errorOccurred": {
+    "description": "Generic error message"
+  },
+  "content_not_found": "Content not found",
+  "@content_not_found": {
+    "description": "Error message when content is not found"
+  },
+  "content_not_found_generic": "Content not found or an error occurred while fetching it.",
+  "@content_not_found_generic": {
+    "description": "Generic error message when content is not found or could not be fetched"
+  },
+  "tryAgain": "Try Again",
+  "@tryAgain": {
+    "description": "Label for the try again button"
+  },
+  "greeting": "Hello, {name}!",
+  "@greeting": {
+    "description": "A greeting message with the person's name",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  "itemCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "description": "A plural message based on an item count",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "lastUpdated": "Last updated: {date}",
+  "@lastUpdated": {
+    "description": "When something was last updated",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "content_published_successfully": "Content published successfully",
+  "@content_published_successfully": {
+    "description": "Message displayed when content is published successfully"
+  },
+  "clear_all": "Clear All",
+  "@clear_all": {
+    "description": "Label for the clear all selections button"
+  },
+  "search_articles": "Search articles...",
+  "@search_articles": {
+    "description": "Hint text for the article search bar"
+  },
+  "enter_email": "Enter your email",
+  "@enter_email": {
+    "description": "Hint text for the email field"
+  },
+  "enter_password": "Enter your password",
+  "@enter_password": {
+    "description": "Hint text for the password field"
+  },
+  "no_matching_articles_found": "No matching articles found.",
+  "@no_matching_articles_found": {
+    "description": "Message displayed when no articles match the search query"
+  },
+  "selected": "Selected",
+  "@selected": {
+    "description": "Label for an item that is currently selected"
+  },
+  "select": "Select",
+  "@select": {
+    "description": "Label for an action to select an item"
+  },
+  "filter_by_source": "Filter by Source",
+  "@filter_by_source": {
+    "description": "Title for the source filter bottom sheet"
+  },
+  "clear_all_filters": "Clear All Filters",
+  "@clear_all_filters": {
+    "description": "Label for clearing all applied filters"
+  },
+  "select_all": "Select All",
+  "@select_all": {
+    "description": "Label for the select all button"
+  },
+  "unselect_all": "Unselect All",
+  "@unselect_all": {
+    "description": "Label for the unselect all button"
+  },
+  "merge": "Merge",
+  "@merge": {
+    "description": "Label for the merge button"
+  },
+  "external_endpoints": "External Endpoints",
+  "@external_endpoints": {
+    "description": "Label for external endpoints settings"
+  },
+  "manage_endpoints": "Manage your integrated platforms",
+  "@manage_endpoints": {
+    "description": "Subtitle for external endpoints settings"
+  },
+  "change_password": "Change Password",
+  "@change_password": {
+    "description": "Title for change password screen"
+  },
+  "current_password": "Current Password",
+  "@current_password": {
+    "description": "Label for current password field"
+  },
+  "new_password": "New Password",
+  "@new_password": {
+    "description": "Label for new password field"
+  },
+  "confirm_new_password": "Confirm New Password",
+  "@confirm_new_password": {
+    "description": "Label for confirm new password field"
+  },
+  "save_changes": "Save Changes",
+  "@save_changes": {
+    "description": "Label for save changes button"
+  },
+  "profile_updated": "Profile updated successfully",
+  "@profile_updated": {
+    "description": "Success message when profile is updated"
+  },
+  "update_profile_failed": "Failed to update profile",
+  "@update_profile_failed": {
+    "description": "Error message when profile update fails"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Label for name field"
+  },
+  "name_required": "Name is required",
+  "@name_required": {
+    "description": "Error message when name is missing"
+  },
+  "email_required": "Email is required",
+  "@email_required": {
+    "description": "Error message when email is missing"
+  },
+  "invalid_email": "Invalid email",
+  "@invalid_email": {
+    "description": "Error message when email format is invalid"
+  },
+  "required": "Required",
+  "@required": {
+    "description": "Error message when a required field is missing"
+  },
+  "send_reset_link": "Send Reset Link",
+  "reset_password_instruction": "Enter your email to receive a password reset link.",
+  "reset_your_password": "Reset Your Password",
+  "back_to_login": "Back to Login",
+  "reset_password": "Reset Password",
+  "reset_token": "Reset Token",
+  "reset_token_hint": "Paste the token from your email",
+  "enter_reset_token": "Please enter the reset token",
+  "password_reset_success": "Password reset successfully",
+  "failed_to_reset_password": "Failed to reset password",
+  "verify_email": "Verify Email",
+  "check_your_email": "Check your email",
+  "verification_code_sent": "We sent a verification code to your email",
+  "verification_code": "Verification Code",
+  "enter_6_digit_code": "Enter the 6-digit code",
+  "enter_verification_code": "Please enter the verification code",
+  "code_must_be_6_digits": "The code must be 6 digits",
+  "verify": "Verify",
+  "resend_code": "Resend Code",
+  "reset_link_sent": "If an account with that email exists, a password reset link has been sent.",
+  "passwords_dont_match": "Passwords do not match",
+  "update_your_security": "Update your security",
+  "ensure_account_secure": "Ensure your account stays secure by using a strong password.",
+  "password_changed_success": "Password changed successfully",
+  "password_changed_error": "Failed to change password",
+  "ai_text_generation": "AI Text Generation",
+  "quota_exceeded_web_upgrade": "Quota exceeded. Please visit our website to upgrade your plan and continue.",
+  "monthly_limit_reached_web_upgrade": "Monthly limit reached. Please visit our website to upgrade your plan.",
+  "enter_your_prompt": "Enter your prompt",
+  "generate": "Generate",
+  "validate_and_merge": "Validate and Merge",
+  "no_articles_to_validate": "No articles to validate.",
+  "previous": "Previous",
+  "please_enter_title": "Please enter a title.",
+  "articles_merged_successfully": "Articles merged successfully! Redirecting to edit.",
+  "merge_articles": "Merge Articles",
+  "cancel": "Cancel",
+  "validate_article": "Validate Article {current} of {total}",
+  "captcha_instruction": "I have completed the login/captcha on the page",
+  "quota_reached_web": "Quota reached. Please visit our website to upgrade.",
+  "title_merged_article": "Title for merged article",
+  "failed_to_merge": "Failed to merge articles: {error}",
+  "next": "Next",
+  "title": "Title",
+  "error": "Error",
+  "loading_content": "Loading content...",
+  "edit_merged_content": "Edit Merged Content",
+  "body": "Body",
+  "please_enter_content": "Please enter some content.",
+  "no_articles_found": "No articles found.",
+  "fetching_all_feeds": "Fetching all feeds...",
+  "all": "All",
+  "draft": "Draft",
+  "published": "Published",
+  "no_merged_contents": "No merged contents found.",
+  "status_label": "Status: {status}",
+  "no_rss_feeds": "No RSS feeds found.",
+  "delete_rss_feed": "Delete RSS Feed",
+  "delete_feed_confirmation": "Are you sure you want to delete this feed?",
+  "delete": "Delete",
+  "publish_options": "Publish Options",
+  "status": "Status",
+  "external_endpoint": "External Endpoint",
+  "none": "None",
+  "publish": "Publish",
+  "update_rss_feed": "Update RSS Feed",
+  "add_rss_feed": "Add RSS Feed",
+  "feed_url": "Feed URL",
+  "enter_url": "Please enter a valid URL",
+  "auto_generate_name": "Auto-generate Name",
+  "save": "Save",
+  "add": "Add",
+  "no_external_endpoints": "No external endpoints found.",
+  "delete_endpoint": "Delete Endpoint",
+  "delete_endpoint_confirmation": "Are you sure you want to delete {name}?",
+  "endpoint_deleted_successfully": "Endpoint deleted successfully!",
+  "external_endpoint_updated": "External Endpoint updated successfully!",
+  "external_endpoint_created": "External Endpoint created successfully!",
+  "edit_endpoint": "Edit Endpoint",
+  "create_new_endpoint": "Create New Endpoint",
+  "platform_name": "Platform Name",
+  "api_url": "API URL",
+  "auth_token_label": "Auth Token (API Key)",
+  "update_endpoint": "Update Endpoint",
+  "create_endpoint": "Create Endpoint",
+  "failed_to_save_options": "Failed to save options: {error}",
+  "failed_to_publish": "Failed to publish: {error}",
+  "page_not_found": "Page Not Found",
+  "page_path_not_found": "Page {path} not found",
+  "go_home": "Go Home",
+  "live_chat": "Live Support",
+  "online": "Online",
+  "offline": "Offline",
+  "no_messages": "No messages yet. Send a message to start chatting!",
+  "type_message": "Type a message...",
+  "quota_reached": "Quota reached",
+  "quota_reached_upgrade": "Quota reached. Please visit our website to upgrade.",
+  "monthly_limit_reached": "Monthly Limit Reached",
+  "quota_reached_explanation": "You have reached your monthly token quota. Please visit our website to upgrade your plan and continue using AI features.",
+  "enjoying_app": "Enjoying the app?",
+  "no_thanks": "No thanks",
+  "sure": "Sure!",
+  "whats_new": "What's new:",
+  "later": "Later",
+  "view_plans": "View Plans",
+  "close": "Close",
+  "share_feedback_question": "Would you like to share your feedback with us?",
+  "feedback_matters": "Your Feedback Matters",
+  "share_thoughts": "Please share your thoughts about the app. If you're enjoying it, a review on the app store would be greatly appreciated!",
+  "feedback_hint": "Enter your feedback here",
+  "submit": "Submit",
+  "required_update": "Required Update",
+  "update_available": "Update Available",
+  "critical_update_message": "A critical update (version {version}) is required to continue using this app.",
+  "new_version_available": "A new version ({version}) is available.",
+  "update_now": "Update Now",
+  "update": "Update"
+}

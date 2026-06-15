@@ -1,0 +1,4362 @@
+[
+    {
+        "path": "/auth/signup",
+        "method": "POST",
+        "description": "Registers a new user, hashes their password, and sends a verification email.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "User's full name",
+                    "example": "John Doe"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address",
+                    "example": "john.doe@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "User's password (min 8 chars, incl. lower, upper, digit, special)",
+                    "example": "SecureP@ssw0rd!"
+                }
+            },
+            "required": [
+                "name",
+                "email",
+                "password"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Registration successful. Please check your email to verify your account before logging in."
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "email_verification_required"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Name must be at least 2 characters long."
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "Invalid email format."
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Password must include: a lowercase letter, an uppercase letter."
+                    }
+                }
+            },
+            "409": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "Email already exists."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/auth/login",
+        "method": "POST",
+        "description": "Authenticates a user and issues access and refresh tokens.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address",
+                    "example": "john.doe@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "User's password",
+                    "example": "SecureP@ssw0rd!"
+                }
+            },
+            "required": [
+                "email",
+                "password"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "description": "JWT Access Token"
+                    },
+                    "refresh_token": {
+                        "type": "string",
+                        "description": "JWT Refresh Token"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid credentials."
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Account is not active. Please verify your email."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/auth/logout",
+        "method": "POST",
+        "description": "Revokes a refresh token, terminating the user's persistent session.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string",
+                    "description": "The refresh token to revoke"
+                }
+            },
+            "required": [
+                "refresh_token"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Logged out successfully."
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid token."
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "User associated with this token not found."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error while checking token status."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/auth/password/forgot",
+        "method": "POST",
+        "description": "Initiates a password reset by sending a reset link to the user's email.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address",
+                    "example": "john.doe@example.com"
+                }
+            },
+            "required": [
+                "email"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "If an account with that email exists, a password reset link has been sent."
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "Invalid email format."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/auth/password/reset",
+        "method": "POST",
+        "description": "Resets the user's password using a valid reset token.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "The password reset token received via email"
+                },
+                "new_password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "The new password (min 8 chars, incl. lower, upper, digit, special)",
+                    "example": "NewSecureP@ssw0rd!"
+                }
+            },
+            "required": [
+                "token",
+                "new_password"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Password reset successfully. You can now log in with your new password."
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "example": "Password must be at least 8 characters long."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid token."
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "User not found."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/auth/token/refresh",
+        "method": "POST",
+        "description": "Exchanges a valid refresh token for a new access token and refresh token pair.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string",
+                    "description": "The expired or about-to-expire refresh token"
+                }
+            },
+            "required": [
+                "refresh_token"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "description": "New JWT Access Token"
+                    },
+                    "refresh_token": {
+                        "type": "string",
+                        "description": "New JWT Refresh Token"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid token or refresh token not recognized."
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Account is not active."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/auth/email/verify",
+        "method": "POST",
+        "description": "Verifies a user's account using the token sent to their email.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "The email verification token"
+                }
+            },
+            "required": [
+                "token"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Email verified successfully. You can now log in!"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Verification token is missing."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid token."
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "User associated with this link not found."
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": false,
+        "requiresPermission": null
+    },
+    {
+        "path": "/me",
+        "method": "GET",
+        "description": "Retrieves the authenticated user's profile information.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "UUID": {
+                        "type": "string",
+                        "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "monthly_tokens_used": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "token_reset_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "users:read"
+    },
+    {
+        "path": "/me",
+        "method": "PUT",
+        "description": "Updates the authenticated user's profile information. If email changes, user status becomes unverified and a new verification email is sent.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "New name for the user (min 3, max 100 chars)",
+                    "example": "Jane Doe"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "New email for the user",
+                    "example": "jane.doe@example.com"
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "UUID": {
+                        "type": "string",
+                        "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jane Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "jane.doe@example.com"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "unverified"
+                    },
+                    "monthly_tokens_used": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "token_reset_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body."
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Name must be between 3 and 100 characters."
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "Invalid email format."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "users:update"
+    },
+    {
+        "path": "/me/change-password",
+        "method": "POST",
+        "description": "Allows an authenticated user to change their password.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "current_password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "The user's current password"
+                },
+                "new_password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "The new password (min 8 chars, incl. lower, upper, digit, special)",
+                    "example": "BrandNewP@ssw0rd!"
+                }
+            },
+            "required": [
+                "current_password",
+                "new_password"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Password updated successfully."
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body format."
+                    },
+                    "current_password": {
+                        "type": "string",
+                        "example": "New password cannot be the same as the current password."
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "example": "Password must be at least 8 characters long."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "current_password": {
+                        "type": "string",
+                        "example": "Current password is incorrect."
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "users:change_password"
+    },
+    {
+        "path": "/v1/app/articles",
+        "method": "GET",
+        "description": "Lists all articles.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "feed_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "title": {
+                            "type": "string",
+                            "example": "Article Title"
+                        },
+                        "url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "http://example.com/article"
+                        },
+                        "published_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list articles"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "articles:read"
+    },
+    {
+        "path": "/v1/app/articles/:id",
+        "method": "GET",
+        "description": "Retrieves a single article by ID.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "feed_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Article Title"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://example.com/article"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid article ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Article not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get article"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "articles:read"
+    },
+    {
+        "path": "/v1/app/articles",
+        "method": "POST",
+        "description": "Creates a new article.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "feed_id": {
+                    "type": "integer",
+                    "description": "The ID of the RSS feed this article belongs to",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the article",
+                    "example": "New Blog Post"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The URL of the article",
+                    "example": "http://example.com/new-post"
+                },
+                "published_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The publication date of the article",
+                    "example": "2024-02-11T10:00:00Z"
+                }
+            },
+            "required": [
+                "feed_id",
+                "title",
+                "url",
+                "published_at"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "feed_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "New Blog Post"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://example.com/new-post"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to create article"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "articles:create"
+    },
+    {
+        "path": "/v1/app/articles/:id",
+        "method": "PUT",
+        "description": "Updates an existing article by ID.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "feed_id": {
+                    "type": "integer",
+                    "description": "The ID of the RSS feed this article belongs to",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the article",
+                    "example": "Updated Blog Post Title"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The URL of the article",
+                    "example": "http://example.com/updated-post"
+                },
+                "published_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The publication date of the article",
+                    "example": "2024-02-11T11:00:00Z"
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "feed_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Updated Blog Post Title"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://example.com/updated-post"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid article ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Article not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to update article"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "articles:update"
+    },
+    {
+        "path": "/v1/app/articles/:id",
+        "method": "DELETE",
+        "description": "Deletes an article by ID.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "article 1 deleted"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid article ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Article not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to delete article"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "articles:delete"
+    },
+    {
+        "path": "/v1/app/plans",
+        "method": "GET",
+        "description": "Lists all available plans.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "Free Plan"
+                        },
+                        "max_monthly_tokens": {
+                            "type": "integer",
+                            "example": 10000
+                        },
+                        "max_feed_subscriptions": {
+                            "type": "integer",
+                            "example": 5
+                        },
+                        "max_articles_per_merge": {
+                            "type": "integer",
+                            "example": 3
+                        },
+                        "max_external_endpoints": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "price_monthly": {
+                            "type": "string",
+                            "format": "decimal",
+                            "example": "0.00"
+                        },
+                        "price_yearly": {
+                            "type": "string",
+                            "format": "decimal",
+                            "example": "0.00"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list plans"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "plans:read"
+    },
+    {
+        "path": "/v1/app/plans/:id",
+        "method": "GET",
+        "description": "Retrieves a single plan by ID.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Free Plan"
+                    },
+                    "max_monthly_tokens": {
+                        "type": "integer",
+                        "example": 10000
+                    },
+                    "max_feed_subscriptions": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "max_articles_per_merge": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "max_external_endpoints": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "price_monthly": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "0.00"
+                    },
+                    "price_yearly": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "0.00"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid plan ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Plan not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get plan"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "plans:read"
+    },
+    {
+        "path": "/v1/app/admin/plans",
+        "method": "POST",
+        "description": "Creates a new plan (Admin access required).",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the plan",
+                    "example": "Pro Plan"
+                },
+                "max_monthly_tokens": {
+                    "type": "integer",
+                    "description": "Maximum tokens allowed per month",
+                    "example": 50000
+                },
+                "max_feed_subscriptions": {
+                    "type": "integer",
+                    "description": "Maximum RSS feed subscriptions allowed",
+                    "example": 20
+                },
+                "max_articles_per_merge": {
+                    "type": "integer",
+                    "description": "Maximum articles allowed per merge operation",
+                    "example": 5
+                },
+                "max_external_endpoints": {
+                    "type": "integer",
+                    "description": "Maximum external endpoints allowed",
+                    "example": 5
+                },
+                "price_monthly": {
+                    "type": "string",
+                    "format": "decimal",
+                    "description": "Monthly price",
+                    "example": "9.99"
+                },
+                "price_yearly": {
+                    "type": "string",
+                    "format": "decimal",
+                    "description": "Yearly price",
+                    "example": "99.99"
+                }
+            },
+            "required": [
+                "name",
+                "max_monthly_tokens",
+                "max_feed_subscriptions",
+                "max_articles_per_merge",
+                "max_external_endpoints",
+                "price_monthly",
+                "price_yearly"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Pro Plan"
+                    },
+                    "max_monthly_tokens": {
+                        "type": "integer",
+                        "example": 50000
+                    },
+                    "max_feed_subscriptions": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "max_articles_per_merge": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "max_external_endpoints": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "price_monthly": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "9.99"
+                    },
+                    "price_yearly": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "99.99"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required or missing permission)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to create plan"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "plans:create",
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/plans/:id",
+        "method": "PUT",
+        "description": "Updates an existing plan by ID (Admin access required).",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the plan",
+                    "example": "Super Pro Plan"
+                },
+                "max_monthly_tokens": {
+                    "type": "integer",
+                    "description": "Maximum tokens allowed per month",
+                    "example": 100000
+                },
+                "max_feed_subscriptions": {
+                    "type": "integer",
+                    "description": "Maximum RSS feed subscriptions allowed",
+                    "example": 50
+                },
+                "max_articles_per_merge": {
+                    "type": "integer",
+                    "description": "Maximum articles allowed per merge operation",
+                    "example": 10
+                },
+                "max_external_endpoints": {
+                    "type": "integer",
+                    "description": "Maximum external endpoints allowed",
+                    "example": 10
+                },
+                "price_monthly": {
+                    "type": "string",
+                    "format": "decimal",
+                    "description": "Monthly price",
+                    "example": "19.99"
+                },
+                "price_yearly": {
+                    "type": "string",
+                    "format": "decimal",
+                    "description": "Yearly price",
+                    "example": "199.99"
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Super Pro Plan"
+                    },
+                    "max_monthly_tokens": {
+                        "type": "integer",
+                        "example": 100000
+                    },
+                    "max_feed_subscriptions": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "max_articles_per_merge": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "max_external_endpoints": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "price_monthly": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "19.99"
+                    },
+                    "price_yearly": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "199.99"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid plan ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required or missing permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Plan not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to update plan"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "plans:update",
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/plans/:id",
+        "method": "DELETE",
+        "description": "Deletes a plan by ID (Admin access required).",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "plan 1 deleted"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid plan ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required or missing permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Plan not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to delete plan"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "plans:delete",
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/permissions",
+        "method": "GET",
+        "description": "Lists all available permissions.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "entity_type": {
+                            "type": "string",
+                            "example": "articles"
+                        },
+                        "action": {
+                            "type": "string",
+                            "example": "read"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list permissions"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/permissions/:id",
+        "method": "GET",
+        "description": "Retrieves a single permission by ID.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "entity_type": {
+                        "type": "string",
+                        "example": "articles"
+                    },
+                    "action": {
+                        "type": "string",
+                        "example": "read"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid permission ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Permission not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get permission"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/permissions",
+        "method": "POST",
+        "description": "Creates a new permission (Admin access required).",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "entity_type": {
+                    "type": "string",
+                    "description": "The entity type (e.g., 'articles', 'plans')",
+                    "example": "articles"
+                },
+                "action": {
+                    "type": "string",
+                    "description": "The action (e.g., 'read', 'create', 'update', 'delete')",
+                    "example": "read"
+                }
+            },
+            "required": [
+                "entity_type",
+                "action"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "entity_type": {
+                        "type": "string",
+                        "example": "articles"
+                    },
+                    "action": {
+                        "type": "string",
+                        "example": "read"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to create permission"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/permissions/:id",
+        "method": "PUT",
+        "description": "Updates an existing permission by ID (Admin access required).",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "entity_type": {
+                    "type": "string",
+                    "description": "The entity type (e.g., 'articles', 'plans')",
+                    "example": "articles"
+                },
+                "action": {
+                    "type": "string",
+                    "description": "The action (e.g., 'read', 'create', 'update', 'delete')",
+                    "example": "write"
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "entity_type": {
+                        "type": "string",
+                        "example": "articles"
+                    },
+                    "action": {
+                        "type": "string",
+                        "example": "write"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid permission ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Permission not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to update permission"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/permissions/:id",
+        "method": "DELETE",
+        "description": "Deletes a permission by ID (Admin access required).",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "permission 1 deleted"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid permission ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Permission not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to delete permission"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/plans/:id/permissions",
+        "method": "GET",
+        "description": "Lists all permissions assigned to a specific plan (Admin access required).",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "plan_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "permission_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid plan ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Plan not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list plan permissions"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/plans/:id/permissions",
+        "method": "POST",
+        "description": "Adds a permission to a specific plan (Admin access required).",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "permission_id": {
+                    "type": "integer",
+                    "description": "The ID of the permission to add to the plan",
+                    "example": 1
+                }
+            },
+            "required": [
+                "permission_id"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Created"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid plan ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Plan not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to add permission to plan"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/plans/:id/permissions/:permission_id",
+        "method": "DELETE",
+        "description": "Removes a permission from a specific plan (Admin access required).",
+        "requestBody": null,
+        "responseBody": {
+            "204": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No Content"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid plan ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Plan permission not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to remove permission from plan"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/ai/generate",
+        "method": "POST",
+        "description": "Generates text using the configured Large Language Model (LLM).",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "The text prompt to send to the LLM for generation.",
+                    "example": "Write a short blog post about the benefits of AI."
+                }
+            },
+            "required": [
+                "prompt"
+            ]
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The generated text from the LLM.",
+                        "example": "AI offers numerous benefits, from automating mundane tasks to providing deep insights..."
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing ai:generate permission)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to generate text"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "ai:generate"
+    },
+    {
+        "path": "/v1/app/rss",
+        "method": "GET",
+        "description": "Lists all RSS feeds for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "user_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://rss.nytimes.com/services/xml/rss/nyt/US.xml"
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "NYT > US"
+                        },
+                        "last_fetched_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "is_active": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        },
+                        "deleted_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:read permission)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list rss feeds"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:read"
+    },
+    {
+        "path": "/v1/app/rss/:id",
+        "method": "GET",
+        "description": "Retrieves a single RSS feed by ID.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://rss.nytimes.com/services/xml/rss/nyt/US.xml"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "NYT > US"
+                    },
+                    "last_fetched_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "is_active": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid rss feed ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:read permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "rss feed not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get rss feed"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:read"
+    },
+    {
+        "path": "/v1/app/rss",
+        "method": "POST",
+        "description": "Creates a new RSS feed subscription for the authenticated user.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The URL of the RSS feed to subscribe to.",
+                    "example": "https://www.theguardian.com/world/rss"
+                }
+            },
+            "required": [
+                "url"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://www.theguardian.com/world/rss"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "World News | The Guardian"
+                    },
+                    "last_fetched_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "is_active": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:create permission)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to create rss feed"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:create"
+    },
+    {
+        "path": "/v1/app/rss/:id",
+        "method": "PUT",
+        "description": "Updates an existing RSS feed subscription by ID.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The new URL for the RSS feed.",
+                    "example": "https://www.theguardian.com/us-news/rss"
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://www.theguardian.com/us-news/rss"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "NYT > US"
+                    },
+                    "last_fetched_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "is_active": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid rss feed ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:update permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "rss feed not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to update rss feed"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:update"
+    },
+    {
+        "path": "/v1/app/rss/:id",
+        "method": "DELETE",
+        "description": "Deletes an RSS feed subscription by ID.",
+        "requestBody": null,
+        "responseBody": {
+            "204": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No Content"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid rss feed ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:delete permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "rss feed not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to delete rss feed"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:delete"
+    },
+    {
+        "path": "/v1/app/rss/:id/fetch",
+        "method": "POST",
+        "description": "Fetches articles from a specific RSS feed by ID and stores them.",
+        "requestBody": null,
+        "responseBody": {
+            "204": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No Content"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid rss feed ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:fetch permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "rss feed not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to parse rss feed"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:fetch"
+    },
+    {
+        "path": "/v1/app/rss/fetch-all",
+        "method": "POST",
+        "description": "Triggers a background job to fetch articles from all active RSS feeds for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "202": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Fetching all feeds in the background."
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing rss:fetch permission)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Server error."
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "rss:fetch"
+    },
+    {
+        "path": "/v1/app/external-endpoints",
+        "method": "POST",
+        "description": "Creates a new external endpoint for the authenticated user. Auth token is encrypted before storage.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "platform_name": {
+                    "type": "string",
+                    "description": "Name of the external platform (e.g., 'WordPress', 'Medium')",
+                    "example": "WordPress"
+                },
+                "api_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The base URL of the external platform's API",
+                    "example": "https://yourblog.wordpress.com/wp-json/wp/v2"
+                },
+                "auth_token": {
+                    "type": "string",
+                    "description": "Authentication token for the external platform",
+                    "example": "your_secure_api_key_or_password"
+                }
+            },
+            "required": [
+                "platform_name",
+                "api_url",
+                "auth_token"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "platform_name": {
+                        "type": "string",
+                        "example": "WordPress"
+                    },
+                    "api_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://yourblog.wordpress.com/wp-json/wp/v2"
+                    },
+                    "auth_token": {
+                        "type": "string",
+                        "description": "Encrypted authentication token (not readable directly)",
+                        "example": "encrypted_string_here"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to create external endpoint"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "external_endpoints:create"
+    },
+    {
+        "path": "/v1/app/external-endpoints",
+        "method": "GET",
+        "description": "Lists all external endpoints for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "user_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "platform_name": {
+                            "type": "string",
+                            "example": "WordPress"
+                        },
+                        "api_url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://yourblog.wordpress.com/wp-json/wp/v2"
+                        },
+                        "auth_token": {
+                            "type": "string",
+                            "description": "Encrypted authentication token (not readable directly)",
+                            "example": "encrypted_string_here"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list external endpoints"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "external_endpoints:read"
+    },
+    {
+        "path": "/v1/app/external-endpoints/:id",
+        "method": "GET",
+        "description": "Retrieves a single external endpoint by ID for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "platform_name": {
+                        "type": "string",
+                        "example": "WordPress"
+                    },
+                    "api_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://yourblog.wordpress.com/wp-json/wp/v2"
+                    },
+                    "auth_token": {
+                        "type": "string",
+                        "description": "Encrypted authentication token (not readable directly)",
+                        "example": "encrypted_string_here"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "External endpoint not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get external endpoint"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "external_endpoints:read"
+    },
+    {
+        "path": "/v1/app/external-endpoints/:id",
+        "method": "PUT",
+        "description": "Updates an existing external endpoint by ID for the authenticated user.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "platform_name": {
+                    "type": "string",
+                    "description": "New name of the external platform (e.g., 'WordPress')",
+                    "example": "WordPress Blog"
+                },
+                "api_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "New base URL of the external platform's API",
+                    "example": "https://newblog.wordpress.com/wp-json/wp/v2"
+                },
+                "auth_token": {
+                    "type": "string",
+                    "description": "New authentication token for the external platform",
+                    "example": "new_secure_api_key_or_password"
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "platform_name": {
+                        "type": "string",
+                        "example": "WordPress Blog"
+                    },
+                    "api_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://newblog.wordpress.com/wp-json/wp/v2"
+                    },
+                    "auth_token": {
+                        "type": "string",
+                        "description": "Encrypted authentication token (not readable directly)",
+                        "example": "encrypted_string_here"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "External endpoint not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to update external endpoint"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "external_endpoints:update"
+    },
+    {
+        "path": "/v1/app/external-endpoints/:id",
+        "method": "DELETE",
+        "description": "Deletes an external endpoint by ID for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "204": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No Content"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "External endpoint not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to delete external endpoint"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "external_endpoints:delete"
+    },
+    {
+        "path": "/v1/app/admin/external-endpoints",
+        "method": "GET",
+        "description": "Lists all external endpoints across all users (Admin access required).",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "user_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "platform_name": {
+                            "type": "string",
+                            "example": "WordPress"
+                        },
+                        "api_url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://yourblog.wordpress.com/wp-json/wp/v2"
+                        },
+                        "auth_token": {
+                            "type": "string",
+                            "description": "Encrypted authentication token (not readable directly)",
+                            "example": "encrypted_string_here"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list external endpoints"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/admin/external-endpoints/:id",
+        "method": "GET",
+        "description": "Retrieves a single external endpoint by ID (Admin access required).",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "platform_name": {
+                        "type": "string",
+                        "example": "WordPress"
+                    },
+                    "api_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://yourblog.wordpress.com/wp-json/wp/v2"
+                    },
+                    "auth_token": {
+                        "type": "string",
+                        "description": "Encrypted authentication token (not readable directly)",
+                        "example": "encrypted_string_here"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Admin plan required)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "External endpoint not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get external endpoint"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null,
+        "requiresAdminPlan": true
+    },
+    {
+        "path": "/v1/app/merged-content",
+        "method": "POST",
+        "description": "Creates new merged content from multiple article inputs, generates content using LLM, and stores it. Checks user plan limits.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "article_inputs": {
+                    "type": "array",
+                    "description": "List of article IDs and optional content to merge.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "description": "ID of the article."
+                            },
+                            "content": {
+                                "type": "string",
+                                "description": "Optional content for the article, if not fetched."
+                            }
+                        },
+                        "required": [
+                            "id"
+                        ]
+                    }
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title for the new merged content.",
+                    "example": "Summary of Recent Tech News"
+                },
+                "publish_status": {
+                    "type": "string",
+                    "enum": [
+                        "draft",
+                        "published"
+                    ],
+                    "description": "Initial publish status of the content (default: 'draft').",
+                    "example": "draft"
+                },
+                "endpoint_id": {
+                    "type": "integer",
+                    "description": "Optional ID of an external endpoint to publish to.",
+                    "nullable": true,
+                    "example": 1
+                }
+            },
+            "required": [
+                "article_inputs",
+                "title"
+            ]
+        },
+        "responseBody": {
+            "201": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Summary of Recent Tech News"
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "The LLM-generated merged content.",
+                        "example": "<p>This is the merged content generated by the AI.</p>"
+                    },
+                    "original_token_count": {
+                        "type": "integer",
+                        "example": 500
+                    },
+                    "merged_article_tokens": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "publish_status": {
+                        "type": "string",
+                        "example": "draft"
+                    },
+                    "endpoint_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "external_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_publish_error": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid request body"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Exceeded plan limits or missing merged_content:create permission)"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to create merged content"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "merged_content:create"
+    },
+    {
+        "path": "/v1/app/merged-content",
+        "method": "GET",
+        "description": "Lists all merged content entries for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "user_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "uuid": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                        },
+                        "title": {
+                            "type": "string",
+                            "example": "Summary of Recent Tech News"
+                        },
+                        "body": {
+                            "type": "string",
+                            "description": "The LLM-generated merged content.",
+                            "example": "<p>This is the merged content generated by the AI.</p>"
+                        },
+                        "original_token_count": {
+                            "type": "integer",
+                            "example": 500
+                        },
+                        "merged_article_tokens": {
+                            "type": "integer",
+                            "example": 200
+                        },
+                        "publish_status": {
+                            "type": "string",
+                            "example": "draft"
+                        },
+                        "endpoint_id": {
+                            "type": "integer",
+                            "nullable": true,
+                            "example": 1
+                        },
+                        "external_id": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "last_publish_error": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "published_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        }
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to list merged contents"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null
+    },
+    {
+        "path": "/v1/app/merged-content/:id",
+        "method": "GET",
+        "description": "Retrieves a single merged content entry by ID for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Summary of Recent Tech News"
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "The LLM-generated merged content.",
+                        "example": "<p>This is the merged content generated by the AI.</p>"
+                    },
+                    "original_token_count": {
+                        "type": "integer",
+                        "example": 500
+                    },
+                    "merged_article_tokens": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "publish_status": {
+                        "type": "string",
+                        "example": "draft"
+                    },
+                    "endpoint_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 1
+                    },
+                    "external_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_publish_error": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Merged content not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to get merged content"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null
+    },
+    {
+        "path": "/v1/app/merged-content/:id",
+        "method": "PUT",
+        "description": "Updates an existing merged content entry by ID for the authenticated user.",
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "New title for the merged content.",
+                    "example": "Revised Tech News Summary"
+                },
+                "body": {
+                    "type": "string",
+                    "description": "New body content (HTML or markdown).",
+                    "example": "<p>This is the revised merged content.</p>"
+                },
+                "publish_status": {
+                    "type": "string",
+                    "enum": [
+                        "draft",
+                        "published"
+                    ],
+                    "description": "New publish status.",
+                    "example": "published"
+                },
+                "endpoint_id": {
+                    "type": "integer",
+                    "description": "New ID of an external endpoint to publish to.",
+                    "nullable": true,
+                    "example": 2
+                }
+            },
+            "required": []
+        },
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Revised Tech News Summary"
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "The LLM-generated merged content.",
+                        "example": "<p>This is the revised merged content.</p>"
+                    },
+                    "original_token_count": {
+                        "type": "integer",
+                        "example": 500
+                    },
+                    "merged_article_tokens": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "publish_status": {
+                        "type": "string",
+                        "example": "published"
+                    },
+                    "endpoint_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "example": 2
+                    },
+                    "external_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_publish_error": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Merged content not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to update merged content"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null
+    },
+    {
+        "path": "/v1/app/merged-content/:id",
+        "method": "DELETE",
+        "description": "Deletes a merged content entry by ID for the authenticated user.",
+        "requestBody": null,
+        "responseBody": {
+            "204": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No Content"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Merged content not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to delete merged content"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": null
+    },
+    {
+        "path": "/v1/app/merged-content/:id/publish",
+        "method": "POST",
+        "description": "Publishes a merged content entry to its associated external endpoint.",
+        "requestBody": null,
+        "responseBody": {
+            "200": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "OK"
+                    }
+                }
+            },
+            "204": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No Content"
+                    }
+                }
+            },
+            "400": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Invalid ID or No external endpoint configured for this content"
+                    }
+                }
+            },
+            "401": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "403": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Forbidden (Missing merged_content:publish permission)"
+                    }
+                }
+            },
+            "404": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Merged content not found"
+                    }
+                }
+            },
+            "500": {
+                "type": "object",
+                "properties": {
+                    "general": {
+                        "type": "string",
+                        "example": "Failed to publish content"
+                    }
+                }
+            }
+        },
+        "requiresAuth": true,
+        "requiresPermission": "merged_content:publish"
+    }
+]

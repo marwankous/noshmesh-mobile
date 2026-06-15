@@ -1,0 +1,16 @@
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/logo_padded.png"
+  min_sdk_android: 21
+
+  # This part removes the blue/default background
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo_padded.png"
+  
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
