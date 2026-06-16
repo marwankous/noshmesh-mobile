@@ -105,7 +105,7 @@ class NoshMeshApi {
 
   static const _base = '/v1/app';
 
-  Future<OrderModel> createOrder({
+  Future<String> createOrder({
     required String cravingText,
     required double budgetMax,
     required String deliveryAddress,
@@ -120,11 +120,11 @@ class NoshMeshApi {
       if (deliveryLng != null) 'delivery_lng': deliveryLng,
       'payment_method': 'cash',
     });
-    return OrderModel.fromJson(r.data as Map<String, dynamic>);
+    return (r.data as Map<String, dynamic>)['uuid'] as String;
   }
 
   Future<List<OrderModel>> myOrders() async {
-    final r = await _dio.get('$_base/orders/mine');
+    final r = await _dio.get('$_base/orders');
     return (r.data as List).map((e) => OrderModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 
@@ -163,12 +163,12 @@ class NoshMeshApi {
   }
 
   Future<List<OrderModel>> availableOrders() async {
-    final r = await _dio.get('$_base/available');
+    final r = await _dio.get('$_base/orders/available');
     return (r.data as List).map((e) => OrderModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<List<OrderModel>> myRestaurantOrders() async {
-    final r = await _dio.get('$_base/mine/restaurant');
+    final r = await _dio.get('$_base/orders/mine/restaurant');
     return (r.data as List).map((e) => OrderModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 }

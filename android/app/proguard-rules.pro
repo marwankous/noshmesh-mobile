@@ -7,7 +7,7 @@
 -keep class io.flutter.plugins.** { *; }
 
 # Keep your domain models and data models if they are used with reflection (JSON serialization)
--keep class com.dorvel.clypify.features.**.data.models.** { *; }
+-keep class com.noshmesh.app.features.**.data.models.** { *; }
 
 # Marshaling/JSON optimization rules
 -keepattributes Signature

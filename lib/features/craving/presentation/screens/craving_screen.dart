@@ -30,13 +30,13 @@ class _CravingScreenState extends ConsumerState<CravingScreen> {
     setState(() => _loading = true);
     try {
       final api = ref.read(noshMeshApiProvider);
-      final order = await api.createOrder(
+      final orderUuid = await api.createOrder(
         cravingText: _cravingController.text.trim(),
         budgetMax: _budget,
         deliveryAddress: _addressController.text.trim(),
       );
       if (!mounted) return;
-      context.push(AppConstants.biddingRoute, extra: order.uuid);
+      context.push(AppConstants.biddingRoute, extra: orderUuid);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

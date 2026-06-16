@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:985038668902:android:e5487b9603d1692c2c19a7",
         "android_client_info": {
-          "package_name": "com.dorvel.blogify_ai"
+          "package_name": "com.noshmesh.app"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "985038668902-1dnotdmf3nf0l6h4479n5tv7jd1jr7rf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dorvel.blogify_ai",
+            "package_name": "com.noshmesh.app",
             "certificate_hash": "b2628289bc4029edc338b5858dd9303afb126f03"
           }
         },
@@ -25,7 +25,7 @@
           "client_id": "985038668902-5o9trfkqnb6uq43bs3un21649he2k62t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dorvel.blogify_ai",
+            "package_name": "com.noshmesh.app",
             "certificate_hash": "fc9484f5b63c156ad6b7baefe76973f0044783e3"
           }
         },
